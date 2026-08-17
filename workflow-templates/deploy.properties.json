@@ -1,0 +1,7 @@
+{
+  "name": "Alloy deploy (OIDC, environment-gated)",
+  "description": "Manual deploy to staging or production. Assumes an AWS role over OIDC with no stored credentials; production is gated on its environment reviewers.",
+  "iconName": "octicon rocket",
+  "categories": ["Deployment", "Python"],
+  "filePatterns": ["^Pulumi\\.yaml$", "^Dockerfile$"]
+}

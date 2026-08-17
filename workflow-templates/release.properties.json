@@ -1,0 +1,7 @@
+{
+  "name": "Alloy release (tag-driven)",
+  "description": "On a v* tag: re-test the tagged commit, build distributables, publish a GitHub release with generated notes.",
+  "iconName": "octicon tag",
+  "categories": ["Continuous integration", "Deployment", "Python"],
+  "filePatterns": ["^pyproject\\.toml$", "^setup\\.py$"]
+}

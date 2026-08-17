@@ -1,0 +1,7 @@
+{
+  "name": "Alloy CI (Python + Docker)",
+  "description": "Lint, test and build on every pull request. SHA-pinned actions and read-only token permissions by default.",
+  "iconName": "octicon check-circle",
+  "categories": ["Continuous integration", "Python", "Docker"],
+  "filePatterns": ["^requirements\\.txt$", "^pyproject\\.toml$", "^Dockerfile$"]
+}

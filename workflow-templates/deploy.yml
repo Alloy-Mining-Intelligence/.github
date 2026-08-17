@@ -1,0 +1,72 @@
+# Deploy to staging or production over OIDC. No long-lived cloud credentials.
+#
+# ⚠️ EVERY `uses:` MUST STAY PINNED TO A FULL 40-CHARACTER COMMIT SHA, with the release named in a
+# trailing comment. See the note at the top of ci.yml — a moving tag produces a `startup_failure` with
+# no logs, not a failed step.
+#
+# ⚠️ THIS TEMPLATE IS NOT RUNNABLE AS COMMITTED. Three things must exist first:
+#
+#   1. An AWS IAM role trusting GitHub's OIDC provider, with a trust policy that pins BOTH this
+#      repository and the ref/environment. A trust policy scoped only to the org lets any repository
+#      in it assume the role.
+#   2. Repository or environment variables `AWS_DEPLOY_ROLE_ARN` and `AWS_REGION`.
+#      ⚠️ Use `vars.*`, never a literal ARN — an ARN carries the account ID, and workflow templates
+#      live in a PUBLIC repository.
+#   3. `staging` and `production` environments on the repository, with production gated on a required
+#      reviewer. The `environment:` key below is what makes that gate apply.
+#
+# ⚠️ `aws-actions/configure-aws-credentials` is a third-party action. The org policy allows only
+# GitHub-authored and Marketplace-verified actions with no allowlist patterns configured, so confirm it
+# resolves on the first real run — if AWS is not currently a verified creator the run will
+# `startup_failure` with no explanation.
+#
+# Replace the deploy step with the real command. Pulumi is the intended tool here.
+
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        type: choice
+        required: true
+        default: staging
+        options: [staging, production]
+
+permissions:
+  contents: read
+  id-token: write # required to request the OIDC token; without it the credential step fails
+
+# One deploy per environment at a time, and never cancel one midway — a half-applied
+# infrastructure change is worse than a queued one.
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: gha-${{ github.run_id }}
+
+      # Proves the role was actually assumed, and records which identity deployed. Without this a
+      # misconfigured role fails later, inside the deploy, where the cause is far less obvious.
+      - name: Verify assumed identity
+        run: aws sts get-caller-identity
+
+      - name: Deploy
+        run: |
+          echo "Deploying ${GITHUB_SHA} to ${{ inputs.environment }}"
+          # Replace with the real deployment, e.g.:
+          #   pulumi stack select ${{ inputs.environment }}
+          #   pulumi up --yes
+          exit 1 # remove once a real deploy command is in place

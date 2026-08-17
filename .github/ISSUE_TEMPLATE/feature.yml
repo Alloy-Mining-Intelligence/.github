@@ -1,0 +1,70 @@
+name: Feature request
+description: Propose new behaviour or a change to existing behaviour.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem before the solution. A clear problem statement often changes what the
+        right solution turns out to be.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What can't be done today, and who is blocked by it? Avoid describing the fix here.
+      placeholder: Operators cannot tell whether a site stopped sending data or genuinely has nothing to send.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should exist instead? Rough is fine.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: >
+        What else would solve this, and why is the proposal better? "Do nothing" and "handle it
+        manually" are legitimate alternatives worth stating.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: Your assessment. Triage may revise it.
+      options:
+        - Blocking — work cannot proceed without this
+        - High — significant time or risk saved
+        - Medium — clear improvement, not urgent
+        - Low — nice to have
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How will we know this is done? Write them as checkable statements.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Optional. Links, prior discussion, screenshots, sketches, related issues.
+    validations:
+      required: false

@@ -1,0 +1,98 @@
+name: Bug report
+description: Report something that is broken or behaving incorrectly.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file this.
+
+        **If this is a security vulnerability, stop here.** Do not describe it in a public issue —
+        follow [our security policy](https://github.com/Alloy-Mining-Intelligence/.github/blob/main/SECURITY.md)
+        instead.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is wrong? One or two sentences is fine.
+      placeholder: Telemetry events stop being written after the connector reconnects.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps someone else can follow to see the same thing.
+      placeholder: |
+        1. Start the connector against a test source
+        2. Drop the network for 30 seconds
+        3. Restore the network
+        4. Watch the event count
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead? Include the exact error text if there is one.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: Your assessment. Triage may revise it.
+      options:
+        - Critical — data loss, outage, or a security-relevant failure
+        - High — core function unusable, no workaround
+        - Medium — function impaired, workaround exists
+        - Low — cosmetic or minor annoyance
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Where did you see this? Version or commit, operating system, runtime version, browser if relevant.
+      placeholder: |
+        Version/commit: v1.4.2 (or 9f8e7d6)
+        OS: macOS 26.5
+        Python: 3.13.2
+        Browser: Safari 26.1
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: >
+        Optional. Paste relevant log output or attach screenshots.
+        **Redact secrets, tokens, account identifiers, and client data before pasting** — issues may be
+        readable outside the team.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Optional. Related issues, recent changes, when it started, what you have already ruled out.
+    validations:
+      required: false

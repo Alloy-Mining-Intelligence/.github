@@ -1,0 +1,11 @@
+# Forces every issue through one of the forms in this directory.
+#
+# A repository that needs a free-form issue can override this by committing its own
+# .github/ISSUE_TEMPLATE/config.yml — inheritance is per-file, so a local copy replaces this one
+# entirely rather than merging with it.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/Alloy-Mining-Intelligence/.github/blob/main/SECURITY.md
+    about: Do not open a public issue. Use private vulnerability reporting or email security@alloymining.ai.

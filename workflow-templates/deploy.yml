@@ -15,10 +15,14 @@
 #   3. `staging` and `production` environments on the repository, with production gated on a required
 #      reviewer. The `environment:` key below is what makes that gate apply.
 #
-# ⚠️ `aws-actions/configure-aws-credentials` is a third-party action. The org policy allows only
-# GitHub-authored and Marketplace-verified actions with no allowlist patterns configured, so confirm it
-# resolves on the first real run — if AWS is not currently a verified creator the run will
-# `startup_failure` with no explanation.
+# ✅ `aws-actions/configure-aws-credentials` is a third-party action and it DOES resolve under the org
+# policy — MEASURED 2026-08-17 (INF-285), not assumed. AWS is a Marketplace verified creator, so
+# `verified_allowed` admits it on its own and the org carries NO allowlist patterns.
+# ⚠️ A `patterns_allowed` exception for this action was added 2026-08-17 and REVERTED the same day,
+# once a probe run proved that removing it changed nothing — the run still started and the action
+# still downloaded. Do not re-add one "to be safe": it widens org-wide policy and buys nothing.
+# ⚠️ This is NOT an exemption from SHA pinning. `sha_pinning_required` is what constrains WHICH ref
+# runs, so the pin below is mandatory regardless.
 #
 # Replace the deploy step with the real command. Pulumi is the intended tool here.
 

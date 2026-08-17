@@ -1,0 +1,24 @@
+# Code owners for THIS repository only.
+#
+# ⚠️ CODEOWNERS is not a default community health file and does not inherit. Despite this being the
+# `.github` repository, this file governs nothing outside it — every repository needs its own copy.
+#
+# ⚠️ Kept at the repository root, NOT in `.github/`, on purpose. In this repository the `.github/`
+# directory holds files that ARE served as org-wide defaults, and CODEOWNERS is precisely the opposite.
+# Filing it alongside them would invite the misreading that it inherits.
+#
+# ⚠️ A code owner must have write access to the repository or the entry is ignored SILENTLY — the file
+# parses, the rule reads as configured, and no review is ever requested. Check syntax and access with:
+#     gh api repos/Alloy-Mining-Intelligence/.github/codeowners/errors
+#
+# ⚠️ Handles in this org carry an `alloy-` prefix, so an owner's handle is never the one they use
+# elsewhere. Confirm any new handle against the org members list before adding it here.
+#
+# ⚠️ A sole code owner cannot satisfy their own review. GitHub never requests review from the author of
+# a pull request, so while one person is both the only owner and the only author, this file assigns no
+# reviewer to anything. It is committed now so the rule is in place and versioned, not because it is
+# doing work yet. Do NOT enable required code-owner review until a second owner exists — it would make
+# every pull request unmergeable.
+
+# Default owner for everything
+* @alloy-awolf

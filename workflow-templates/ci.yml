@@ -12,11 +12,22 @@
 #
 # Customise: the Python version, the dependency install, and the lint/test commands. Delete the
 # `image` job if this repository has no Dockerfile.
+#
+# ✅ FIRST RUN ON A REAL REPO: MillWatch-POC PR #3, 2026-08-17 (INF-286). Both jobs green. Before
+# that this template had never executed anywhere — it was valid YAML that nobody had proved runs.
+# Five things were wrong, every one of them invisible to inspection. They are fixed below and each
+# is marked `⚠️ INF-286`. If you are about to "simplify" one of those comments away, it was written
+# because the failure it describes actually happened.
 
 name: CI
 
 on:
   pull_request:
+  # ⚠️ INF-286: `$default-branch` is expanded ONLY when this template is copied through the
+  # Actions → New workflow UI. Committed by any other route — API, git push, a copy-paste — it stays
+  # literally `$default-branch`, matches no branch, and the push trigger silently never fires.
+  # The `pull_request:` trigger above still works, so CI looks alive on PRs while main is unguarded.
+  # ✅ If you did not use the UI, replace this with your real default branch name.
   push:
     branches: [ $default-branch ]
 
@@ -35,19 +46,34 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # ⚠️ INF-286: MATCH THE RUNTIME THIS REPO ACTUALLY SHIPS, don't keep 3.13 because it is here.
+      # MillWatch-POC's Dockerfile is `python:3.11-slim`, so testing on 3.13 would have exercised an
+      # interpreter the image never runs — a gap that surfaces in production, not in CI.
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
           cache: pip
 
+      # ⚠️ INF-286: lint and test tooling belongs in `requirements-dev.txt`, NOT `requirements.txt`.
+      # A Dockerfile that does `pip install -r requirements.txt` will otherwise ship ruff and pytest
+      # inside the runtime image. Create `requirements-dev.txt` when you adopt this template —
+      # this step fails if it is missing, which is deliberate and better than silently skipping it.
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt -r requirements-dev.txt
 
+      # ⚠️ INF-286: on an existing codebase `ruff check .` with default rules is red on day one —
+      # 61 findings on MillWatch-POC, essentially all style. CI that fails from the first commit
+      # teaches everyone to ignore the red tick, which costs more than the style gains.
+      # ✅ Set a real-error baseline in `pyproject.toml` and widen it deliberately:
+      #      [tool.ruff.lint]
+      #      select = ["E9", "F"]     # syntax/IO errors + pyflakes: undefined and unused names
       - name: Lint
         run: ruff check .
 
+      # ⚠️ INF-286: `pytest` exits 5 when it collects ZERO tests, which fails this step. "pytest is
+      # installed" is not enough — the repo needs at least one real test before this goes green.
       - name: Test
         run: pytest --junitxml=test-results.xml
 
@@ -69,5 +95,15 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # ⚠️⚠️ INF-286: THE TAG MUST BE LOWERCASED. Docker requires lowercase repository names, and
+      # GitHub repo names are mixed case — `MillWatch-POC` produced:
+      #     ERROR: failed to build: invalid tag "MillWatch-POC:<sha>":
+      #            repository name must be lowercase
+      # It fails at TAG VALIDATION, before a single layer is built, so the Dockerfile can be entirely
+      # correct and the job still dies. ⚠️ This survived both inspection AND local testing — a human
+      # running `docker build --tag myapp:test .` by hand types the tag lowercase without thinking.
+      # Only a real run, on a repo whose real name has capitals, finds it.
       - name: Build image
-        run: docker build --tag "${GITHUB_REPOSITORY##*/}:${GITHUB_SHA}" .
+        run: |
+          name=$(echo "${GITHUB_REPOSITORY##*/}" | tr '[:upper:]' '[:lower:]')
+          docker build --tag "${name}:${GITHUB_SHA}" .

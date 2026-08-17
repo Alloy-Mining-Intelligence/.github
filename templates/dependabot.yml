@@ -1,0 +1,71 @@
+# Dependabot version updates — COPY-ME TEMPLATE.
+#
+# ⚠️ This file does nothing where it sits. `dependabot.yml` is NOT a community health file and does not
+# inherit from the .github repository. Copy it to `.github/dependabot.yml` IN THE TARGET REPOSITORY and
+# delete the ecosystems that repository does not use.
+#
+# It is kept in `templates/` rather than at `.github/dependabot.yml` on purpose: the latter would
+# activate Dependabot on the .github repository itself and still configure nothing anywhere else.
+#
+# Version updates are separate from security updates. Security updates are already enabled org-wide and
+# need no file; this file is what keeps dependencies fresh BEFORE a CVE lands. SOC 2 CC7.1.
+#
+# ⚠️ The `reviewers:` key was REMOVED by GitHub — it is no longer in the configuration reference.
+# A config still carrying it routes review to nobody. Use `assignees:` for assignment, and let
+# CODEOWNERS in the target repository drive review.
+
+version: 2
+
+updates:
+  # ⚠️ Keep this one in every repository that has a workflow. The org Actions policy requires
+  # SHA-pinned actions, and Dependabot is what maintains those pins — it bumps the SHA and rewrites the
+  # trailing version comment. Without it, pinned actions never get security fixes at all.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+    # Grouping keeps a weekly refresh to a couple of reviewable PRs instead of a dozen. Majors stay
+    # separate because they are the ones that actually break something.
+    groups:
+      python-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    # assignees: ["alloy-awolf"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "docker"
+
+  # Uncomment for repositories with a JavaScript toolchain.
+  # - package-ecosystem: npm
+  #   directory: /
+  #   schedule:
+  #     interval: weekly
+  #     day: monday
+  #   open-pull-requests-limit: 10
+  #   groups:
+  #     js-minor-patch:
+  #       patterns: ["*"]
+  #       update-types: ["minor", "patch"]

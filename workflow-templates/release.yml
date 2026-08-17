@@ -57,8 +57,8 @@ jobs:
 
       # ⚠️ INF-286: `pytest` runs below but was never installed — it is dev tooling, and installing it
       # from `requirements.txt` would ship a test runner inside any image built from that file.
-      # Same correction as ci.yml. ⚠️ Carried over by inspection: unlike ci.yml, THIS TEMPLATE HAS
-      # STILL NEVER BEEN EXECUTED (INF-286 criterion 3 is open), so treat it as reasoned, not proven.
+      # Same correction as ci.yml. ✅ PROVEN ON A REAL RUN, no longer inspection alone: MillWatch-POC
+      # run 32074473075, 2026-08-17, installed from both files and succeeded (INF-286 criterion 3).
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

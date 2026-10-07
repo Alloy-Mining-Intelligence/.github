@@ -10,6 +10,12 @@
 # ✅ Let Dependabot maintain these pins — the `github-actions` ecosystem updates the SHA and rewrites
 #    the version comment with it. See templates/dependabot.yml in the .github repo.
 #
+# ⚠️ `runs-on:` IS PINNED TOO — `ubuntu-24.04`, never the floating `-latest` label — and DEPENDABOT
+# DOES NOT MOVE IT. The floating label changes operating system on a date GitHub picks (24.04 → 26.04
+# from 2026-10-19, actions/runner-images issue 14748) with no pull request and no preview. Pinned,
+# the OS move is a change you make and test like any other. Bump by hand when actions/runner-images
+# announces the pinned image's retirement. deploy.yml and release.yml follow the same rule.
+#
 # Customise: the Python version, the dependency install, and the lint/test commands. Delete the
 # `image` job if this repository has no Dockerfile.
 #
@@ -42,7 +48,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -91,7 +97,7 @@ jobs:
   # Plain `docker build` rather than a build-push action: the image is only proved to build here, it is
   # never pushed, so the action buys nothing and adds a third-party dependency to keep pinned.
   image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 

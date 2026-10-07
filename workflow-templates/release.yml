@@ -4,6 +4,9 @@
 # trailing comment. See the note at the top of ci.yml for what a moving tag actually does — it is not
 # a failed step, it is a run that never starts.
 #
+# ⚠️ `runs-on:` names its Ubuntu release, never the floating `-latest` label. See the note at the top
+# of ci.yml.
+#
 # Customise the build and the artefact list. Trigger with an annotated tag:
 #     git tag -s v1.2.3 -m 'v1.2.3' && git push origin v1.2.3
 #
@@ -42,7 +45,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # fetch-depth: 0 so --generate-notes can see history back to the previous tag. With the default
       # shallow clone the generated notes come out empty rather than failing.

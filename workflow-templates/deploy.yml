@@ -4,6 +4,9 @@
 # trailing comment. See the note at the top of ci.yml — a moving tag produces a `startup_failure` with
 # no logs, not a failed step.
 #
+# ⚠️ `runs-on:` names its Ubuntu release, never the floating `-latest` label, so a production deploy
+# runs on the image its staging run did. See the note at the top of ci.yml.
+#
 # ⚠️ THIS TEMPLATE IS NOT RUNNABLE AS COMMITTED. Three things must exist first:
 #
 #   1. An AWS IAM role trusting GitHub's OIDC provider, with a trust policy that pins BOTH this
@@ -50,7 +53,7 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
